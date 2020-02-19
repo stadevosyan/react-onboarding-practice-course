@@ -1,8 +1,6 @@
 import React from 'react';
-import { Form, Link, ButtonGroup } from '@servicetitan/design-system';
+import { Form, Link, Stack } from '@servicetitan/design-system';
 import { AuthLayout } from './layouts/auth-layout';
-
-import * as Styles from './auth-form.less';
 
 export const LoginForm = () => {
     return (
@@ -10,14 +8,14 @@ export const LoginForm = () => {
             <Form>
                 <Form.Input label="Login" />
                 <Form.Input type="password" label="Password" />
-                <ButtonGroup fullWidth equalWidth>
+                <Stack alignItems="center" justifyContent="space-between">
                     <Link href="#/auth/register" primary>
                         Sign Up
                     </Link>
-                    <Form.Button type="submit" primary className={Styles.test}>
+                    <Form.Button type="submit" primary>
                         Login
                     </Form.Button>
-                </ButtonGroup>
+                </Stack>
             </Form>
         </AuthLayout>
     );
