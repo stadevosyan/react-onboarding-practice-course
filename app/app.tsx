@@ -1,18 +1,14 @@
 import React from 'react';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 
-import { Stack } from '@servicetitan/design-system';
-
-import { Placeholder } from './modules/common/components/placeholder';
-
-import * as Styles from './app.less';
+import { AuthModule } from './modules/auth/components/auth-module';
 
 export const App: React.FC = () => (
     <React.StrictMode>
         <HashRouter>
-            <Stack alignItems="center" justifyContent="center" className={Styles.app}>
-                <Placeholder />
-            </Stack>
+            <Switch>
+                <Route path="/auth" component={AuthModule} />
+            </Switch>
         </HashRouter>
     </React.StrictMode>
 );
