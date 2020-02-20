@@ -46,7 +46,7 @@ export const RegisterForm = provide({
                             />
                         }
                         value={passwordField.value}
-                        onChange={store.onPasswordChange}
+                        onChange={passwordField.onChangeHandler}
                         error={passwordField.hasError}
                     />
                     <Form.Input

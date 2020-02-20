@@ -5,28 +5,47 @@ import { InputFieldState, DropdownFieldState, FormValidators } from '@servicetit
 import { FormState } from 'formstate';
 import { UserRole } from '../../common/enums/user-role';
 
+const ERRORS = {
+    minLength: 'should be at least 3 characters',
+    match: 'Passwords must match',
+    strongPassword:
+        '* password must be at least 8 characters long including a number, a lowercase letter, and an uppercase letter'
+};
+
 @injectable()
 export class RegisterStore {
-    login = new InputFieldState('').validators(
-        FormValidators.required,
-        val => val.length <= 3 && 'should be at least 3 characters'
-    );
-    password = new InputFieldState('').validators(
-        val =>
-            !FormValidators.passwordIsValidFormat(val) &&
-            '* password must be at least 8 characters long including a number, a lowercase letter, and an uppercase letter'
-    );
-    passwordConfirm = new InputFieldState('').validators(
-        val => this.password.value !== val && 'Passwords must match'
-    );
-    role = new DropdownFieldState<UserRole>(UserRole.Public);
+    private login = new InputFieldState('')
+        .validators(FormValidators.required, val => val.length <= 3 && ERRORS.minLength)
+        .disableAutoValidation();
+    private password = new InputFieldState('')
+        .validators(val => {
+            return !FormValidators.passwordIsValidFormat(val) && ERRORS.strongPassword;
+        })
+        .disableAutoValidation();
+    private passwordConfirm = new InputFieldState('').disableAutoValidation();
+    private role = new DropdownFieldState<UserRole>(UserRole.Public).disableAutoValidation();
+
+    private passwordDuo = new FormState({
+        password: this.password,
+        passwordConfirm: this.passwordConfirm
+    }).validators(state => {
+        if (state.password.value !== state.passwordConfirm.value) {
+            state.passwordConfirm.setError(' ');
+            state.password.setError(ERRORS.match);
+
+            return ERRORS.match;
+        }
+
+        return null;
+    });
 
     @observable
     formState = new FormState({
         login: this.login,
         password: this.password,
         passwordConfirm: this.passwordConfirm,
-        role: this.role
+        role: this.role,
+        passwordDuo: this.passwordDuo
     });
 
     @action
@@ -34,18 +53,6 @@ export class RegisterStore {
         const validation = await this.formState.validate();
         if (validation.hasError) {
             return;
-        }
-    };
-
-    onPasswordChange = (
-        e: React.SyntheticEvent<HTMLInputElement, Event>,
-        data: { value: string }
-    ) => {
-        const pswrdConfirmField = this.formState.$.passwordConfirm;
-        this.formState.$.password.onChangeHandler(e, data);
-
-        if (pswrdConfirmField.dirty) {
-            pswrdConfirmField.validate();
         }
     };
 }
