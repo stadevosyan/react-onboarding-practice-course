@@ -5,9 +5,10 @@ import { provide, useDependencies } from '@servicetitan/react-ioc';
 import { observer } from 'mobx-react';
 import { LoginStore } from '../stores/login.store';
 import { Label } from '@servicetitan/form';
+import { AuthApi } from '../api/auth.api';
 
 export const LoginForm = provide({
-    singletons: [LoginStore]
+    singletons: [LoginStore, AuthApi]
 })(
     observer(() => {
         const [store] = useDependencies(LoginStore);
@@ -17,8 +18,10 @@ export const LoginForm = provide({
 
         const { login: loginAction } = store;
 
+        const { loginError } = store;
+
         return (
-            <AuthLayout header="Login">
+            <AuthLayout header="Login" errorMsg={loginError}>
                 <Form onSubmit={loginAction}>
                     <Form.Input
                         label={

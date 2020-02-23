@@ -1,9 +1,16 @@
-import { injectable } from '@servicetitan/react-ioc';
+import { AuthStore } from './auth.store';
+import { injectable, inject } from '@servicetitan/react-ioc';
 import { observable, action } from 'mobx';
 
-import { InputFieldState, DropdownFieldState, FormValidators } from '@servicetitan/form';
+import {
+    InputFieldState,
+    DropdownFieldState,
+    FormValidators,
+    formStateToJS
+} from '@servicetitan/form';
 import { FormState } from 'formstate';
 import { UserRole } from '../../common/enums/user-role';
+import { AuthApi } from './../api/auth.api';
 
 const ERRORS = {
     minLength: 'should be at least 3 characters',
@@ -48,11 +55,39 @@ export class RegisterStore {
         passwordDuo: this.passwordDuo
     });
 
+    @observable
+    registerError = '';
+
+    @action setError = (errMsg: string): void => {
+        this.registerError = errMsg;
+    };
+
+    @observable
+    loginError = '';
+
+    constructor(
+        @inject(AuthStore) private authStore: AuthStore,
+        @inject(AuthApi) private authApi: AuthApi
+    ) {
+        this.authStore.reset();
+    }
+
     @action
     register = async () => {
         const validation = await this.formState.validate();
         if (validation.hasError) {
             return;
+        }
+
+        const mappedFormData = formStateToJS(this.formState);
+
+        const result = await this.authApi.register(mappedFormData);
+
+        if (result.status === 200) {
+            this.setError('');
+            this.authStore.gotRegistered(result.data.login);
+        } else {
+            this.setError('Username is taken');
         }
     };
 }

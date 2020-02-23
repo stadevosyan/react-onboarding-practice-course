@@ -1,13 +1,26 @@
 import React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, Redirect } from 'react-router';
 import { LoginForm } from './login-form';
 import { RegisterForm } from './register-form';
+import { provide, useDependencies } from '@servicetitan/react-ioc';
+import { observer } from 'mobx-react';
+import { AuthApi } from '../api/auth.api';
+import { UserDB } from '../../common/api/mocks/users.db';
+import { AuthStore } from '../stores/auth.store';
 
-export const AuthModule = () => {
-    return (
-        <Switch>
-            <Route path="/auth/register" component={RegisterForm} />
-            <Route path="/auth/login" component={LoginForm} />
-        </Switch>
-    );
-};
+export const AuthModule = provide({
+    singletons: [AuthApi, UserDB, AuthStore]
+})(
+    observer(() => {
+        const [store] = useDependencies(AuthStore);
+        const { redirectToLogin } = store;
+
+        return (
+            <Switch>
+                <Route path="/auth/login" component={LoginForm} />
+                {redirectToLogin && <Redirect to={'/auth/login'} />}
+                <Route path="/auth/register" component={RegisterForm} />
+            </Switch>
+        );
+    })
+);

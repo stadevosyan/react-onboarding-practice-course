@@ -6,12 +6,14 @@ import { UserRole } from '../../common/enums/user-role';
 import { enumToOptions, Label } from '@servicetitan/form';
 import { RegisterStore } from '../stores/register.store';
 import { observer } from 'mobx-react';
+import { AuthApi } from '../api/auth.api';
 
 export const RegisterForm = provide({
-    singletons: [RegisterStore]
+    singletons: [RegisterStore, AuthApi]
 })(
     observer(() => {
         const [store] = useDependencies(RegisterStore);
+
         const registerForm = store.formState.$;
 
         const { login: loginField } = registerForm;
@@ -21,8 +23,11 @@ export const RegisterForm = provide({
 
         const { register: registerAction } = store;
         const userRoleOptions = enumToOptions(UserRole);
+
+        const { registerError } = store;
+
         return (
-            <AuthLayout header="Register">
+            <AuthLayout header="Register" errorMsg={registerError}>
                 <Form onSubmit={registerAction}>
                     <Form.Input
                         label={
