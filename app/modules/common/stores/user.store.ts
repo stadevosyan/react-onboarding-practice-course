@@ -18,7 +18,7 @@ export class AppUserStore {
         }
     }
 
-    @observable user: AppUser | undefined;
+    @observable user?: AppUser;
 
     @action
     gotAuthenticated = (user: AppUser): void => {
