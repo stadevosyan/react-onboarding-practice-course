@@ -1,4 +1,4 @@
-import { AuthStore } from './auth.store';
+import { AppUserStore } from './../../common/stores/user.store';
 import { injectable, inject } from '@servicetitan/react-ioc';
 import { observable, action } from 'mobx';
 
@@ -66,11 +66,9 @@ export class RegisterStore {
     loginError = '';
 
     constructor(
-        @inject(AuthStore) private authStore: AuthStore,
+        @inject(AppUserStore) private appUserStore: AppUserStore,
         @inject(AuthApi) private authApi: AuthApi
-    ) {
-        this.authStore.reset();
-    }
+    ) {}
 
     @action
     register = async () => {
@@ -81,11 +79,15 @@ export class RegisterStore {
 
         const mappedFormData = formStateToJS(this.formState);
 
-        const result = await this.authApi.register(mappedFormData);
+        const result = await this.authApi.register({
+            login: mappedFormData.login,
+            password: mappedFormData.password,
+            role: mappedFormData.role
+        });
 
         if (result.status === 200) {
             this.setError('');
-            this.authStore.gotRegistered(result.data.login);
+            this.appUserStore.gotAuthenticated(result.data);
         } else {
             this.setError('Username is taken');
         }

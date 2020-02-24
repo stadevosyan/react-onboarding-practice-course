@@ -1,4 +1,3 @@
-import { AuthStore } from './auth.store';
 import { AppUserStore } from './../../common/stores/user.store';
 import { AuthApi } from './../api/auth.api';
 import { injectable, inject } from '@servicetitan/react-ioc';
@@ -30,14 +29,8 @@ export class LoginStore {
 
     constructor(
         @inject(AppUserStore) private appUserStore: AppUserStore,
-        @inject(AuthStore) private authStore: AuthStore,
         @inject(AuthApi) private authApi: AuthApi
-    ) {
-        if (this.authStore.loginToShow) {
-            this.formState.$.login.value = this.authStore.loginToShow;
-            this.authStore.reset();
-        }
-    }
+    ) {}
 
     @action setError = (errMsg: string): void => {
         this.loginError = errMsg;
@@ -60,7 +53,7 @@ export class LoginStore {
 
         if (result.status === 200) {
             this.setError('');
-            this.appUserStore.setAppUser(result.data);
+            this.appUserStore.gotAuthenticated(result.data);
         } else {
             this.setError('Incorrect username or password');
         }

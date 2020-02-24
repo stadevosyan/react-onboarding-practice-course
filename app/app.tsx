@@ -12,13 +12,22 @@ export const App: React.FC = provide({
 })(
     observer(() => {
         const [userStore] = useDependencies(AppUserStore);
+        const { authenticated } = userStore;
 
         return (
             <React.StrictMode>
                 <HashRouter>
-                    <Route path="/auth" component={AuthModule} />
-                    <Route path="/dashboard" component={Users} />
-                    <Redirect to={userStore.user ? '/dashboard' : '/auth/register'} />
+                    {authenticated ? (
+                        <>
+                            <Route path="/dashboard" component={Users} />
+                            <Redirect to={'/dashboard'} />
+                        </>
+                    ) : (
+                        <>
+                            <Route path="/auth" component={AuthModule} />
+                            <Redirect to={'/auth'} />
+                        </>
+                    )}
                 </HashRouter>
             </React.StrictMode>
         );
