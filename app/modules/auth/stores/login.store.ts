@@ -1,7 +1,9 @@
-import { injectable } from '@servicetitan/react-ioc';
+import { AppUserStore } from './../../common/stores/user.store';
+import { AuthApi } from './../api/auth.api';
+import { injectable, inject } from '@servicetitan/react-ioc';
 import { observable, action } from 'mobx';
 
-import { InputFieldState, FormValidators } from '@servicetitan/form';
+import { InputFieldState, FormValidators, formStateToJS } from '@servicetitan/form';
 import { FormState } from 'formstate';
 
 const ERRORS = {
@@ -22,11 +24,38 @@ export class LoginStore {
         )
     });
 
+    @observable
+    loginError = '';
+
+    constructor(
+        @inject(AppUserStore) private appUserStore: AppUserStore,
+        @inject(AuthApi) private authApi: AuthApi
+    ) {}
+
+    @action setError = (errMsg: string): void => {
+        this.loginError = errMsg;
+    };
+
+    @action
+    populateLogin = (login: string): void => {
+        this.formState.$.login.value = login;
+    };
+
     @action
     login = async () => {
         const validation = await this.formState.validate();
         if (validation.hasError) {
             return;
+        }
+
+        const mappedFormData = formStateToJS(this.formState);
+        const result = await this.authApi.login(mappedFormData);
+
+        if (result.status === 200) {
+            this.setError('');
+            this.appUserStore.gotAuthenticated(result.data);
+        } else {
+            this.setError('Incorrect username or password');
         }
     };
 }
