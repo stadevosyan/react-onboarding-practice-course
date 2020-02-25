@@ -4,8 +4,9 @@ import { HashRouter, Route, Redirect } from 'react-router-dom';
 import { AuthModule } from './modules/auth/components/auth-module';
 import { provide, useDependencies } from '@servicetitan/react-ioc';
 import { AppUserStore } from './modules/common/stores/user.store';
-import { Users } from './modules/users/components/users-page';
+import { Users } from './modules/users-panel/components/users';
 import { observer } from 'mobx-react';
+import { NewsFeed } from './modules/news-feed/components/news-feed';
 
 export const App: React.FC = provide({
     singletons: [AppUserStore]
@@ -19,8 +20,9 @@ export const App: React.FC = provide({
                 <HashRouter>
                     {authenticated ? (
                         <>
-                            <Route path="/dashboard" component={Users} />
-                            <Redirect to={'/dashboard'} />
+                            <Route path="/users" component={Users} />
+                            <Route path="/news-feed" component={NewsFeed} />
+                            <Redirect to={'/users'} />
                         </>
                     ) : (
                         <>
