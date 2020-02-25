@@ -1,9 +1,8 @@
 import React from 'react';
 import { Page, Sidebar, SideNav } from '@servicetitan/design-system';
 import { navItems } from '../../config/nav-item-data';
-import { SideNavItem } from '../side-nav/side-nav-item';
+import { SideNavItem, SideNavItemProps } from '../side-nav/side-nav-item';
 import { LogoutNavItem } from '../side-nav/logout-item';
-import { SideNavItemProps } from '../side-nav/side-nav-item';
 import { useHistory } from 'react-router';
 
 const title = 'react onboarding practice course';
