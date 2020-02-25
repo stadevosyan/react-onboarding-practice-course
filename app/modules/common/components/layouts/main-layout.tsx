@@ -1,27 +1,14 @@
 import React from 'react';
 import { Page, Sidebar, SideNav } from '@servicetitan/design-system';
-import { navItems } from '../../config/nav-item-data';
-import { SideNavItem, SideNavItemProps } from '../side-nav/side-nav-item';
-import { LogoutNavItem } from '../side-nav/logout-item';
-import { useHistory } from 'react-router';
+import { SideNavLinkItem } from '@servicetitan/link-item';
+import { observer } from 'mobx-react';
+import { AppUserStore } from '../../stores/user.store';
+import { useDependencies } from '@servicetitan/react-ioc';
 
 const title = 'react onboarding practice course';
 
-interface ISideNavComponents {
-    [componentName: string]: React.FC<SideNavItemProps>;
-}
-
-const SideNavComponents: ISideNavComponents = {
-    SideNavItem,
-    LogoutNavItem
-};
-
-export const MainLayout: React.FC = ({ children }) => {
-    const {
-        location: { pathname }
-    } = useHistory();
-
-    const order = navItems.find(item => item.path === pathname)!.order;
+export const MainLayout: React.FC = observer(({ children }) => {
+    const [{ logout }] = useDependencies(AppUserStore);
 
     return (
         <Page
@@ -30,22 +17,11 @@ export const MainLayout: React.FC = ({ children }) => {
                 <Sidebar>
                     <Sidebar.Section padding="y">
                         <SideNav title={title.toUpperCase()}>
-                            {navItems.map(navItem => {
-                                let NavItemComponent;
-                                const itemProps = {
-                                    ...navItem,
-                                    active: order === navItem.order
-                                };
-
-                                if (navItem.type === 'action') {
-                                    NavItemComponent = SideNavComponents[navItem.componentName!];
-                                    delete itemProps.componentName;
-                                } else {
-                                    NavItemComponent = SideNavComponents['SideNavItem'];
-                                }
-
-                                return <NavItemComponent key={navItem.order} {...itemProps} />;
-                            })}
+                            <SideNavLinkItem pathname="/users">Users</SideNavLinkItem>
+                            <SideNavLinkItem pathname="/news-feed">News Feed</SideNavLinkItem>
+                            <SideNav.Item className={'m-t-2'} onClick={logout}>
+                                Logout
+                            </SideNav.Item>
                         </SideNav>
                     </Sidebar.Section>
                 </Sidebar>
@@ -54,4 +30,4 @@ export const MainLayout: React.FC = ({ children }) => {
             {children}
         </Page>
     );
-};
+});
