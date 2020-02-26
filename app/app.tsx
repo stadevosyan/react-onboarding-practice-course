@@ -7,9 +7,10 @@ import { AppUserStore } from './modules/common/stores/user.store';
 import { Users } from './modules/users-panel/components/users';
 import { observer } from 'mobx-react';
 import { NewsFeed } from './modules/news-feed/components/news-feed';
+import { UserDB } from './modules/common/api/mocks/users.db';
 
 export const App: React.FC = provide({
-    singletons: [AppUserStore]
+    singletons: [AppUserStore, UserDB]
 })(
     observer(() => {
         const [userStore] = useDependencies(AppUserStore);

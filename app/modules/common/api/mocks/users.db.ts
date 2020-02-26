@@ -54,4 +54,9 @@ export class UserDB {
     @action
     findUser = (user: { login: string; password: string }): AppUser | undefined =>
         Users.find(item => item.login === user.login && item.password === user.password);
+
+    @action
+    getUsers = (offset: number, limit: number) => {
+        return Users.slice(offset, limit);
+    };
 }
