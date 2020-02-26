@@ -3,7 +3,6 @@ import { mockAxiosResponse } from './../../common/api/mocks/axios-response';
 import { UserDB } from './../../common/api/mocks/users.db';
 import { AxiosResponse } from 'axios';
 import { injectable, inject } from '@servicetitan/react-ioc';
-import { action } from 'mobx';
 
 @injectable()
 export class UsersApi {
@@ -11,7 +10,6 @@ export class UsersApi {
 
     constructor(@inject(UserDB) private userDB: UserDB) {}
 
-    @action
     getUsers = (pageNumber: number): Promise<AxiosResponse> => {
         const offset = (pageNumber - 1) * this.usersPerPage;
         const users = this.userDB.getUsers(offset, this.usersPerPage);

@@ -1,7 +1,6 @@
 import { UserRole } from './../../enums/user-role';
 import { AppUser } from './../../stores/user.store';
 import { injectable } from '@servicetitan/react-ioc';
-import { action } from 'mobx';
 
 export const Users: AppUser[] = [
     {
@@ -38,7 +37,6 @@ export const Users: AppUser[] = [
 
 @injectable()
 export class UserDB {
-    @action
     addUser = (user: AppUser): AppUser | undefined => {
         if (Users.find(item => item.login === user.login)) {
             return undefined;
@@ -51,11 +49,9 @@ export class UserDB {
         }
     };
 
-    @action
     findUser = (user: { login: string; password: string }): AppUser | undefined =>
         Users.find(item => item.login === user.login && item.password === user.password);
 
-    @action
     getUsers = (offset: number, limit: number) => {
         return Users.slice(offset, limit);
     };
