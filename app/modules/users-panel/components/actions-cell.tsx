@@ -2,15 +2,17 @@ import React from 'react';
 import { ButtonGroup, Button, Icon } from '@servicetitan/design-system';
 import { Confirm } from '@servicetitan/confirm';
 import { getActionCell, GridCellProps, EditActionProps } from '@servicetitan/grid';
-import { GridDataItem } from '../stores/users.store';
+import { GridDataItem, UsersStore } from '../stores/users.store';
+import { useDependencies } from '@servicetitan/react-ioc';
 
 const EditAction: React.FC<EditActionProps<GridDataItem>> = ({ gridState, dataItem }) => {
+    const [{ updateUser }] = useDependencies(UsersStore);
     if (!gridState) {
         return <td />;
     }
 
     const saveHandler = () => {
-        gridState.saveEdit(dataItem);
+        updateUser(dataItem);
     };
 
     const cancelHandler = () => gridState.cancelEdit(dataItem);
@@ -28,12 +30,14 @@ const EditAction: React.FC<EditActionProps<GridDataItem>> = ({ gridState, dataIt
 };
 
 const ViewAction: React.FC<GridCellProps<GridDataItem>> = ({ gridState, dataItem }) => {
+    const [{ removeUser }] = useDependencies(UsersStore);
+
     if (!gridState) {
         return <td />;
     }
 
     const editHandler = () => gridState!.edit(dataItem);
-    const deleteHandler = () => gridState?.removeFromDataSource(dataItem.id);
+    const deleteHandler = () => removeUser(dataItem.id);
 
     return (
         <ButtonGroup className="action-buttons-group">
