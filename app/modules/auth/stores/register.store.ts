@@ -58,7 +58,8 @@ export class RegisterStore {
     @observable
     registerError = '';
 
-    @action setError = (errMsg: string): void => {
+    @action
+    setError = (errMsg: string): void => {
         this.registerError = errMsg;
     };
 

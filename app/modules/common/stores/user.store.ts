@@ -5,7 +5,7 @@ import { injectable } from '@servicetitan/react-ioc';
 export interface AppUser {
     id?: number;
     login: string;
-    password: string;
+    password?: string;
     role: UserRole;
 }
 
@@ -18,7 +18,7 @@ export class AppUserStore {
         }
     }
 
-    @observable user: AppUser | undefined;
+    @observable user?: AppUser;
 
     @action
     gotAuthenticated = (user: AppUser): void => {

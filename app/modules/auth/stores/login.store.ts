@@ -32,7 +32,8 @@ export class LoginStore {
         @inject(AuthApi) private authApi: AuthApi
     ) {}
 
-    @action setError = (errMsg: string): void => {
+    @action
+    setError = (errMsg: string): void => {
         this.loginError = errMsg;
     };
 

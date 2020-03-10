@@ -5,10 +5,9 @@ import { RegisterForm } from './register-form';
 import { provide } from '@servicetitan/react-ioc';
 import { observer } from 'mobx-react';
 import { AuthApi } from '../api/auth.api';
-import { UserDB } from '../../common/api/mocks/users.db';
 
 export const AuthModule = provide({
-    singletons: [AuthApi, UserDB]
+    singletons: [AuthApi]
 })(
     observer(() => {
         return (
