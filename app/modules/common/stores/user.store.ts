@@ -5,7 +5,7 @@ import { injectable } from '@servicetitan/react-ioc';
 export interface AppUser {
     id?: number;
     login: string;
-    password: string;
+    password?: string;
     role: UserRole;
 }
 

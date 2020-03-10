@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 
-export const mockAxiosResponse = async <T>(data: T, status: number): Promise<AxiosResponse<T>> => {
+const mockAxiosResponse = async <T>(data: T, status: number): Promise<AxiosResponse<T>> => {
     return {
         data,
         status,
@@ -8,4 +8,15 @@ export const mockAxiosResponse = async <T>(data: T, status: number): Promise<Axi
         headers: [],
         config: {}
     };
+};
+
+export const handleResponse = <T>(data: T) => {
+    let status: number;
+    if (data !== undefined) {
+        status = 200;
+    } else {
+        status = 404;
+    }
+
+    return mockAxiosResponse(data, status);
 };

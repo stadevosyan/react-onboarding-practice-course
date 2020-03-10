@@ -1,6 +1,7 @@
 import { UserRole } from './../../enums/user-role';
 import { AppUser } from './../../stores/user.store';
 import { injectable } from '@servicetitan/react-ioc';
+import { cloneDeep } from 'lodash';
 
 export const Users: AppUser[] = [
     {
@@ -52,7 +53,44 @@ export class UserDB {
     findUser = (user: { login: string; password: string }): AppUser | undefined =>
         Users.find(item => item.login === user.login && item.password === user.password);
 
-    getUsers = (offset: number, limit: number) => {
-        return Users.slice(offset, limit);
+    updateUser = (id: number, user: AppUser): AppUser | undefined => {
+        let userKey;
+        let oldUser: AppUser;
+
+        Users.forEach((instance, key) => {
+            if (instance.id === id) {
+                userKey = key;
+                oldUser = instance;
+            }
+        });
+
+        if (userKey === undefined) {
+            return undefined;
+        }
+
+        const updatedUser = { ...oldUser!, ...user };
+        Users[userKey] = updatedUser;
+
+        return updatedUser;
     };
+
+    removeUser = (id: number) => {
+        let userKey;
+
+        Users.forEach((instance, key) => {
+            if (instance.id === id) {
+                userKey = key;
+            }
+        });
+
+        if (userKey === undefined) {
+            return undefined;
+        }
+
+        const deleteUser = Users[userKey];
+        Users.splice(userKey, 1);
+        return deleteUser;
+    };
+
+    getUsers = (): AppUser[] => cloneDeep(Users);
 }

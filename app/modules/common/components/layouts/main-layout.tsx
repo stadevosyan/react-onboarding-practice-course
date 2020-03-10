@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Sidebar, SideNav } from '@servicetitan/design-system';
+import { Page, Sidebar, SideNav, Stack } from '@servicetitan/design-system';
 import { SideNavLinkItem } from '@servicetitan/link-item';
 import { observer } from 'mobx-react';
 import { AppUserStore } from '../../stores/user.store';
@@ -12,7 +12,7 @@ export const MainLayout: React.FC = observer(({ children }) => {
 
     return (
         <Page
-            backgroundColor="white"
+            spacing="relaxed"
             sidebar={
                 <Sidebar>
                     <Sidebar.Section padding="y">
@@ -27,7 +27,7 @@ export const MainLayout: React.FC = observer(({ children }) => {
                 </Sidebar>
             }
         >
-            {children}
+            <Stack alignItems="center">{children}</Stack>
         </Page>
     );
 });
